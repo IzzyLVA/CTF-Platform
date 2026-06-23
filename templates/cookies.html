@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Session Panel</title>
+</head>
+<body style="background:black; color:lime; font-family:monospace; text-align:center;">
+
+<h2>SESSION CONTROL PANEL</h2>
+
+<p>Session token detected.</p>
+
+<p id="status">{{ message }}</p>
+
+<br>
+
+<button onclick="location.reload()">
+    Revalidate Session
+</button>
+
+<p style="margin-top:20px; color:gray;">
+Hint: This system trusts client-side data 👀
+</p>
+
+</body>
+</html>

@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CTF Challenge - 4X Encode</title>
+    <style>
+        body {
+            font-family: 'Courier New', monospace;
+            background: #0a0a0a;
+            color: #00ff00;
+            text-align: center;
+            padding: 50px;
+            margin: 0;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: #111;
+            padding: 40px;
+            border: 2px solid #00ff00;
+            box-shadow: 0 0 20px #00ff00;
+        }
+        h1 {
+            color: #00ff41;
+            text-shadow: 0 0 10px #00ff41;
+        }
+        .encoded {
+            font-size: 1.3em;
+            background: #000;
+            padding: 20px;
+            margin: 30px 0;
+            border: 1px dashed #00ff00;
+            word-break: break-all;
+            color: #00ff80;
+        }
+        .hint {
+            margin: 20px;
+            font-size: 0.9em;
+            color: #00cc66;
+        }
+        button {
+            background: #00ff00;
+            color: #000;
+            border: none;
+            padding: 12px 24px;
+            font-size: 1.1em;
+            cursor: pointer;
+            margin: 10px;
+            transition: all 0.3s;
+        }
+        button:hover {
+            background: #00cc00;
+            transform: scale(1.05);
+        }
+        .flag-input {
+            margin: 20px;
+            padding: 10px;
+            width: 300px;
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔐 ENCODE CHALLENGE 🔐</h1>
+        <p><strong>Level 4 • Find the original message</strong></p>
+        
+        <div class="hint">
+            The flag is hidden behind <strong>4 layers of encoding</strong>.<br>
+            Decode step by step.
+        </div>
+
+        <div class="encoded" id="ciphertext">
+            yGY0eCR6Bo95i3V0vV5hHR9tSPh0nzcSH1cuST9kqF1VXtIXRFO4p2bgCxOyiQ13
+        </div>
+
+        <div class="hint">
+            Hint 1: The day this was released (specifically the "holiday") still pertains to the challenge.<br>
+            Hint 2: This has been encrypted as many times as the months have gone by this year already.<br>
+            Hint 3: The four encryption methods initials are BRAV.
+        </div>
+
+
+        <p id="result" style="margin-top: 20px; font-weight: bold;"></p>
+    </div>
+
+    <script>
+        const realFlag = "flag{3nc0d3d_1n_tr1pl3}";
+
+        function checkFlag() {
+            const input = document.getElementById('flagInput').value.trim();
+            const result = document.getElementById('result');
+            
+            if (input.toLowerCase() === realFlag) {
+                result.style.color = "#00ff00";
+                result.textContent = "✅ Correct! You solved the Triple Encode challenge!";
+            } else {
+                result.style.color = "#ff0000";
+                result.textContent = "❌ Wrong flag. Try decoding again.";
+            }
+        }
+
+        function giveHint() {
+            const hints = [
+                "First layer: Base64 decode",
+                "Second layer: The output contains hex characters → try hex decode",
+                "Third layer: Looks like ROT13 or Caesar cipher"
+            ];
+            alert("Extra Hint:\n\n" + hints[Math.floor(Math.random()*hints.length)]);
+        }
+
+        let konami = '';
+        document.addEventListener('keydown', function(e) {
+            konami += e.key;
+            if (konami.length > 10) konami = konami.slice(-10);
+            if (konami.includes('ArrowUpArrowUpArrowDownArrowDownArrowLeftArrowRightArrowLeftArrowRightba')) {
+                alert("Solution:\n1. Base64 →  f4x$z... (binary)\n2. Hex decode the bytes → \"GrokWasHere\"\n3. ROT13 → flag{3nc0d3d_1n_tr1pl3}");
+            }
+        });
+    </script>
+</body>
+</html>

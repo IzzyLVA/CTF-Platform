@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JM CTF | Register New Agent</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+    
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background: #0a0a0a;
+      color: #ff0000;
+      font-family: 'Press Start 2P', cursive;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      position: relative;
+    }
+
+    body::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: repeating-linear-gradient(transparent 0px, transparent 2px, rgba(255,0,0,0.03) 2px, rgba(255,0,0,0.03) 4px);
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .container {
+      background: #111111;
+      border: 4px solid #ff0000;
+      box-shadow: 0 0 40px rgba(255, 0, 0, 0.6);
+      padding: 40px 50px;
+      width: 420px;
+      text-align: center;
+      position: relative;
+      z-index: 2;
+    }
+
+    .header h1 {
+      font-size: 26px;
+      color: #ff0000;
+      text-shadow: 0 0 10px #ff0000;
+      letter-spacing: 4px;
+      margin-bottom: 8px;
+    }
+
+    .subtitle {
+      color: #ff4444;
+      font-size: 12px;
+      letter-spacing: 2px;
+    }
+
+    input {
+      width: 100%;
+      padding: 15px;
+      margin: 12px 0;
+      background: #1a1a1a;
+      border: 2px solid #ff0000;
+      color: #ffdddd;
+      font-family: 'Press Start 2P', cursive;
+      font-size: 14px;
+      text-align: center;
+    }
+
+    input:focus {
+      outline: none;
+      box-shadow: 0 0 15px #ff0000;
+      border-color: #ff4444;
+    }
+
+    button {
+      width: 100%;
+      padding: 15px;
+      background: #ff0000;
+      color: #000;
+      border: 2px solid #ff0000;
+      font-family: 'Press Start 2P', cursive;
+      font-size: 16px;
+      cursor: pointer;
+      margin-top: 20px;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+    }
+
+    button:hover {
+      background: #000;
+      color: #ff0000;
+      box-shadow: 0 0 25px #ff0000;
+    }
+
+    .switch-link {
+      margin-top: 25px;
+      color: #ff6666;
+      text-decoration: none;
+      font-size: 12px;
+      display: block;
+    }
+
+    .switch-link:hover { color: #ff0000; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1 class="glitch">JM CTF</h1>
+      <p class="subtitle">NEW AGENT REGISTRATION</p>
+    </div>
+
+    <form id="register-form" onsubmit="handleRegister(event)">
+      <input type="text" id="username" placeholder="CHOOSE USERNAME" required>
+      <input type="password" id="password" placeholder="PASSWORD" required>
+      <input type="password" id="confirm-password" placeholder="CONFIRM PASSWORD" required>
+
+      <button type="submit">CREATE ACCOUNT</button>
+    </form>
+
+    <a href="/login" class="switch-link">← Already have an account? BACK TO LOGIN</a>
+
+    <div style="margin-top:25px; font-size:11px; color:#ff6666;">
+      REGISTRATION IS OPEN FOR THE CURRENT CTF EVENT
+    </div>
+  </div>
+
+  <script>
+    async function handleRegister(e) {
+      e.preventDefault();
+
+      const username = document.getElementById('username').value.trim();
+      const password = document.getElementById('password').value;
+      const confirmPassword = document.getElementById('confirm-password').value;
+
+      if (password !== confirmPassword) {
+        alert("❌ PASSWORDS DO NOT MATCH");
+        return;
+      }
+
+      if (password.length < 6) {
+        alert("❌ PASSWORD MUST BE AT LEAST 6 CHARACTERS");
+        return;
+      }
+
+      const btn = e.target.querySelector('button');
+      const originalText = btn.textContent;
+      btn.textContent = "CREATING...";
+      btn.disabled = true;
+
+      try {
+        const res = await fetch("/register", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ username, password })
+        });
+
+        const data = await res.json();
+
+        if (data.success) {
+          alert("✅ ACCOUNT CREATED SUCCESSFULLY!");
+          window.location.href = "/login";
+        } else {
+          alert("❌ " + (data.error || "Registration failed"));
+        }
+      } catch (err) {
+        alert("❌ Server error - is the server running?");
+      }
+
+      btn.textContent = originalText;
+      btn.disabled = false;
+    }
+  </script>
+</body>
+</html>

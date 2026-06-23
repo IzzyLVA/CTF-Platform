@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>THE VAULT</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=VT323&display=swap');
+
+        :root {
+            --vault-gold: #ffd700;
+            --lcd-green: #00ff41;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: radial-gradient(circle at center, #1a1a1a 0%, #000000 100%);
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'VT323', monospace;
+            overflow: hidden;
+            position: relative;
+        }
+
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: repeating-linear-gradient(
+                45deg,
+                transparent,
+                transparent 10px,
+                rgba(255, 215, 0, 0.03) 10px,
+                rgba(255, 215, 0, 0.03) 20px
+            );
+            pointer-events: none;
+            animation: scanlines 4s linear infinite;
+        }
+
+        @keyframes scanlines {
+            0% { background-position: 0 0; }
+            100% { background-position: 0 100px; }
+        }
+
+        .vault-container {
+            background: linear-gradient(#2c2c2c, #1a1a1a);
+            border: 14px solid #444;
+            border-image: linear-gradient(to bottom, #ffd700, #b8860b) 1;
+            width: 460px;
+            padding: 30px 25px;
+            box-shadow: 
+                0 0 40px #ffd700,
+                inset 0 0 60px rgba(0, 0, 0, 0.9),
+                0 25px 50px rgba(0, 0, 0, 0.8);
+            position: relative;
+            z-index: 2;
+        }
+
+        .vault-container::before {
+            content: '';
+            position: absolute;
+            top: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 120px;
+            height: 12px;
+            background: #111;
+            border: 4px solid #ffd700;
+            border-radius: 50%;
+            box-shadow: 0 0 15px #ffd700;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 3.2rem;
+            color: var(--vault-gold);
+            text-shadow: 
+                0 0 10px #ffd700,
+                0 0 20px #ffd700;
+            margin-bottom: 8px;
+            letter-spacing: 8px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            font-size: 1.3rem;
+            margin-bottom: 25px;
+            letter-spacing: 4px;
+        }
+
+        #display {
+            background: #111;
+            border: 8px solid #222;
+            border-radius: 12px;
+            height: 110px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.8rem;
+            color: var(--lcd-green);
+            text-shadow: 0 0 15px var(--lcd-green);
+            letter-spacing: 12px;
+            margin-bottom: 30px;
+            box-shadow: 
+                inset 0 0 30px rgba(0, 255, 65, 0.4),
+                0 0 20px rgba(0, 255, 65, 0.6);
+            transition: all 0.3s ease;
+            overflow: hidden;
+            position: relative;
+        }
+
+        #display::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                transparent 40%,
+                rgba(255,255,255,0.1) 50%,
+                transparent 60%
+            );
+            animation: flicker 1.5s infinite;
+            pointer-events: none;
+        }
+
+        @keyframes flicker {
+            0%, 100% { opacity: 0.4; }
+            50% { opacity: 1; }
+        }
+
+        .keypad {
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+        }
+
+        .numbers {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 14px;
+        }
+
+        .bottom-row {
+            display: grid;
+            grid-template-columns: 1fr 1.2fr 1fr;
+            gap: 14px;
+        }
+
+        button {
+            font-family: 'VT323', monospace;
+            font-size: 2.2rem;
+            font-weight: bold;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.1s ease;
+            box-shadow: 
+                0 8px #111,
+                0 0 15px rgba(255, 215, 0, 0.3);
+        }
+
+        button:active {
+            transform: translateY(6px);
+            box-shadow: 0 2px #111;
+        }
+
+        .digit {
+            background: #333;
+            color: #fff;
+            padding: 24px 10px;
+            box-shadow: 0 8px #222;
+        }
+
+        .digit:hover {
+            background: #444;
+        }
+
+        #clear {
+            background: #9c2a2a;
+            color: #fff;
+            padding: 24px 10px;
+        }
+
+        #clear:hover {
+            background: #c22;
+        }
+
+        #enter {
+            background: linear-gradient(#006600, #00aa00);
+            color: #fff;
+            padding: 24px 10px;
+            font-size: 2rem;
+        }
+
+        #enter:hover {
+            background: linear-gradient(#00aa00, #00ff00);
+        }
+
+        .status {
+            text-align: center;
+            margin-top: 15px;
+            font-size: 1.4rem;
+            min-height: 28px;
+        }
+
+        @keyframes shake {
+            0% { transform: translate(1px, 1px) rotate(0deg); }
+            10% { transform: translate(-1px, -2px) rotate(-1deg); }
+            20% { transform: translate(-3px, 0px) rotate(1deg); }
+            30% { transform: translate(3px, 2px) rotate(0deg); }
+            40% { transform: translate(1px, -1px) rotate(1deg); }
+            50% { transform: translate(-1px, 2px) rotate(-1deg); }
+            60% { transform: translate(-3px, 1px) rotate(0deg); }
+            70% { transform: translate(3px, 2px) rotate(-1deg); }
+            80% { transform: translate(-1px, -1px) rotate(1deg); }
+            90% { transform: translate(1px, 2px) rotate(0deg); }
+            100% { transform: translate(1px, -2px) rotate(-1deg); }
+        }
+
+        .shake {
+            animation: shake 0.6s ease-in-out;
+        }
+
+        .unlocked #display {
+            background: #003300;
+            color: #00ff41;
+            text-shadow: 0 0 30px #00ff41;
+            animation: unlockPulse 1.5s infinite;
+        }
+
+        @keyframes unlockPulse {
+            0%, 100% { text-shadow: 0 0 30px #00ff41; }
+            50% { text-shadow: 0 0 60px #00ff41, 0 0 80px #00ff41; }
+        }
+
+.success-overlay {
+    display: none;
+
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+
+    background: rgba(0, 40, 0, 0.97);
+    z-index: 99999;
+
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+
+    animation: successPop 0.6s ease;
+    backdrop-filter: blur(6px);
+}
+
+        .success-overlay.show {
+            display: flex;
+        }
+
+        .success-title {
+            font-size: 4rem;
+            color: #00ff41;
+            text-shadow: 0 0 40px #00ff41;
+            margin-bottom: 20px;
+            letter-spacing: 12px;
+        }
+
+.success-text {
+    font-size: 1.8rem;
+    color: #ffd700;
+    max-width: 400px;
+    line-height: 1.5;
+    margin-top: 10px;
+    text-align: center;
+    padding: 20px;
+    max-width: 500px;
+}
+
+        .vault-body {
+            position: relative;
+        }
+
+        .vault-body::after {
+            content: '🔒';
+            position: absolute;
+            top: -45px;
+            right: -35px;
+            font-size: 4rem;
+            opacity: 0.2;
+            transition: all 1s ease;
+        }
+
+        .vault-container.unlocked .vault-body::after {
+            content: '🔓';
+            opacity: 1;
+            transform: scale(1.4) rotate(360deg);
+        }
+    </style>
+</head>
+<body>
+    <div class="vault-container" id="vault">
+        <div class="vault-body">
+            <h1>THE VAULT</h1>
+            <div class="subtitle">SECURE • UNBREAKABLE • CLASSIFIED</div>
+            
+            <div id="display">ENTER COMBINATION</div>
+            
+            <div class="keypad">
+                <div class="numbers">
+                    <button class="digit" data-value="1">1</button>
+                    <button class="digit" data-value="2">2</button>
+                    <button class="digit" data-value="3">3</button>
+                    <button class="digit" data-value="4">4</button>
+                    <button class="digit" data-value="5">5</button>
+                    <button class="digit" data-value="6">6</button>
+                    <button class="digit" data-value="7">7</button>
+                    <button class="digit" data-value="8">8</button>
+                    <button class="digit" data-value="9">9</button>
+                </div>
+                
+                <div class="bottom-row">
+                    <button id="clear">CLEAR</button>
+                    <button class="digit" data-value="0">0</button>
+                    <button id="enter">ENTER</button>
+                </div>
+            </div>
+            
+            <div class="status" id="status"></div>
+        </div>
+        
+        <div class="success-overlay" id="success-overlay">
+            <div class="success-title">ACCESS GRANTED</div>
+            <div class="success-text">
+                THE VAULT IS OPEN.<br>
+                YOU REVERSED THE JAVASCRIPT.<br><br>
+                <span style="font-size: 1.4rem; color: #666;">
+    JMCTF{l33t_h4x0r_d1dnt_brutef0rc3}
+</span><br>
+                <span style="font-size: 1.1rem; margin-top: 30px; display: block;">
+    The vault was never meant to be brute forced...
+</span>
+            </div>
+            <button onclick="resetVault()" style="margin-top: 40px; padding: 15px 40px; font-size: 1.6rem; background: #ffd700; color: #111; border: none; border-radius: 8px; cursor: pointer;">
+                RESET VAULT
+            </button>
+        </div>
+    </div>
+
+    <script>
+        /**
+         * THE VAULT - CTF Challenge
+         * 
+         * Objective for players:
+         * Open browser dev tools (F12 → Sources or Inspector tab) and reverse engineer
+         * the JavaScript to discover the correct 6-digit combination.
+         * 
+         * It's hidden using a simple but classic encoding trick inside getVaultCombo().
+         * 
+         * Good luck, hacker!
+         */
+
+        let currentInput = '';
+        const MAX_LENGTH = 4;
+        let isUnlocked = false;
+
+        const display = document.getElementById('display');
+        const statusEl = document.getElementById('status');
+        const vaultContainer = document.getElementById('vault');
+        const successOverlay = document.getElementById('success-overlay');
+
+        function getVaultCombo() {
+    const parts = ["MTMz", "Nw=="]; // "1337"
+    const combined = parts.join('');
+    return atob(combined);
+}
+
+        function fakeSecurityCheck(code) {
+            return code === "0000" || code === "6767";
+        }
+
+        function updateDisplay() {
+            if (isUnlocked) return;
+            
+            if (currentInput.length === 0) {
+                display.textContent = 'ENTER COMBINATION';
+                display.style.letterSpacing = '12px';
+            } else {
+                display.textContent = currentInput;
+                display.style.letterSpacing = '12px';
+            }
+        }
+
+        function showStatus(message, color, duration = 1800) {
+            statusEl.textContent = message;
+            statusEl.style.color = color;
+            
+            setTimeout(() => {
+                if (!isUnlocked) {
+                    statusEl.textContent = '';
+                }
+            }, duration);
+        }
+
+        function denyAccess() {
+            display.classList.add('shake');
+            display.style.color = '#ff4444';
+            
+            showStatus('ACCESS DENIED', '#ff4444');
+            
+            setTimeout(() => {
+                display.classList.remove('shake');
+                display.style.color = '#00ff41';
+                currentInput = '';
+                updateDisplay();
+            }, 800);
+        }
+
+        function unlockVault() {
+            if (isUnlocked) return;
+            
+            isUnlocked = true;
+            
+            vaultContainer.classList.add('unlocked');
+            display.textContent = 'UNLOCKED';
+            display.style.letterSpacing = '8px';
+            
+            showStatus('VAULT BREACHED', '#00ff41', 4000);
+            
+            successOverlay.classList.add('show');
+            
+            document.querySelectorAll('button').forEach(btn => {
+    btn.disabled = true;
+});
+            
+            console.log('%c🎉 VAULT CRACKED! The hidden combo was successfully reversed.', 'color:#00ff41; font-size:18px; font-family:monospace');
+            console.log('%cThe combination you just used: ' + getVaultCombo(), 'color:#ffd700; font-size:16px');
+
+            function getVaultCombo() {
+    const _0x1 = ["TlczPQ==", "TXRNeg=="];
+    const _0x2 = _0x1.reverse().join('');
+    return atob(atob(_0x2));
+}
+        }
+
+        function initKeypad() {
+
+    document.querySelectorAll('.digit').forEach(btn => {
+        btn.addEventListener('click', () => {
+            if (isUnlocked) return;
+
+            if (currentInput.length < MAX_LENGTH) {
+                currentInput += btn.dataset.value;
+                updateDisplay();
+            }
+        });
+    });
+
+    document.getElementById('clear').addEventListener('click', () => {
+        if (isUnlocked) return;
+
+        currentInput = '';
+        updateDisplay();
+        statusEl.textContent = '';
+    });
+
+    document.getElementById('enter').addEventListener('click', () => {
+        if (isUnlocked) return;
+
+        const correct = getVaultCombo();
+
+        if (currentInput === correct) {
+            unlockVault();
+        } else {
+            denyAccess();
+        }
+    });
+}
+
+function resetVault() {
+    currentInput = '';
+    isUnlocked = false;
+
+    document.querySelectorAll('button').forEach(btn => {
+        btn.disabled = false;
+    });
+
+    successOverlay.classList.remove('show');
+    vaultContainer.classList.remove('unlocked');
+
+    updateDisplay();
+    statusEl.textContent = '';
+
+    console.clear();
+}
+
+window.addEventListener("DOMContentLoaded", () => {
+    initKeypad();
+    updateDisplay();
+});
+    </script>
+</body>
+</html>

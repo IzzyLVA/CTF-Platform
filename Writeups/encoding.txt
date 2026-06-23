@@ -1,0 +1,11 @@
+yGY0eCR6Bo95i3V0vV5hHR9tSPh0nzcSH1cuST9kqF1VXtIXRFO4p2bgCxOyiQ13
+
+hints:
+	One hint:  the day this was released (specifically the "holiday") still pertains to the challenge  :))
+	Two hint: This has been encrypted as many times as the months have gone by this year already.
+	Third hint: The four encryption methods’ initials are BRAV
+
+
+solution:
+
+V key is  AprilFools

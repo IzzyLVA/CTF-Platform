@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JM CTF | CTF Login</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+    
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background: #0a0a0a;
+      color: #ff0000;
+      font-family: 'Press Start 2P', cursive;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      position: relative;
+    }
+
+    body::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: repeating-linear-gradient(transparent 0px, transparent 2px, rgba(255,0,0,0.03) 2px, rgba(255,0,0,0.03) 4px);
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .container {
+      background: #111111;
+      border: 4px solid #ff0000;
+      box-shadow: 0 0 40px rgba(255, 0, 0, 0.6);
+      padding: 40px 50px;
+      width: 420px;
+      text-align: center;
+      position: relative;
+      z-index: 2;
+    }
+
+    .header h1 {
+      font-size: 28px;
+      color: #ff0000;
+      text-shadow: 0 0 10px #ff0000;
+      letter-spacing: 4px;
+      margin-bottom: 8px;
+    }
+
+    .subtitle {
+      color: #ff4444;
+      font-size: 12px;
+      letter-spacing: 2px;
+    }
+
+    .tabs {
+      display: flex;
+      margin: 30px 0 25px;
+      border-bottom: 2px solid #330000;
+    }
+
+    .tab {
+      flex: 1;
+      padding: 15px;
+      background: #1a1a1a;
+      color: #ff6666;
+      cursor: pointer;
+      font-size: 14px;
+      border: 2px solid #330000;
+    }
+
+    .tab.active {
+      background: #ff0000;
+      color: #000;
+      border-color: #ff0000;
+      box-shadow: 0 0 15px #ff0000;
+    }
+
+    .login-form {
+      display: none;
+    }
+
+    .login-form.active {
+      display: block;
+    }
+
+    input {
+      width: 100%;
+      padding: 15px;
+      margin: 12px 0;
+      background: #1a1a1a;
+      border: 2px solid #ff0000;
+      color: #ffdddd;
+      font-family: 'Press Start 2P', cursive;
+      font-size: 14px;
+      text-align: center;
+    }
+
+    input:focus {
+      outline: none;
+      box-shadow: 0 0 15px #ff0000;
+      border-color: #ff4444;
+    }
+
+    button {
+      width: 100%;
+      padding: 15px;
+      background: #ff0000;
+      color: #000;
+      border: 2px solid #ff0000;
+      font-family: 'Press Start 2P', cursive;
+      font-size: 16px;
+      cursor: pointer;
+      margin-top: 10px;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+    }
+
+    button:hover {
+      background: #000;
+      color: #ff0000;
+      box-shadow: 0 0 25px #ff0000;
+    }
+
+    .switch-link {
+      margin-top: 25px;
+      color: #ff6666;
+      text-decoration: none;
+      font-size: 12px;
+    }
+
+    .switch-link:hover { color: #ff0000; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1 class="glitch">JM CTF</h1>
+      <p class="subtitle">CTF 2026 • ACCESS TERMINAL</p>
+    </div>
+
+    <!-- Tabs -->
+    <div class="tabs">
+      <div class="tab active" onclick="switchTab(0)">USER LOGIN</div>
+      <div class="tab" onclick="switchTab(1)">ADMIN LOGIN</div>
+    </div>
+
+   <!-- User Login -->
+<div id="user-form" class="login-form active">
+  <form onsubmit="handleLogin(event)">
+    <input type="text" id="user-username" placeholder="USERNAME" required>
+    <input type="password" id="user-password" placeholder="PASSWORD" required>
+    <button type="submit">ENTER THE ARENA</button>
+  </form>
+</div>
+
+<!-- Admin Login -->
+<div id="admin-form" class="login-form">
+  <form onsubmit="handleLogin(event)">
+    <input type="text" id="admin-username" placeholder="ADMIN ID" required>
+    <input type="password" id="admin-password" placeholder="ROOT ACCESS" required>
+    <button type="submit">GAIN ROOT PRIVILEGES</button>
+  </form>
+</div>
+
+    <a href="/register" class="switch-link">Don't have an account? REGISTER HERE →</a>
+
+    <div class="footer" style="margin-top:30px; font-size:10px; color:#ff0000;">
+      © 2026 JM CTF • Unauthorized access will be logged
+    </div>
+  </div>
+
+  <script>
+    function switchTab(tabIndex) {
+      document.querySelectorAll('.tab').forEach((tab, i) => {
+        tab.classList.toggle('active', i === tabIndex);
+      });
+      document.querySelectorAll('.login-form').forEach((form, i) => {
+        form.classList.toggle('active', i === tabIndex);
+      });
+    }
+
+    async function handleLogin(e) {
+  e.preventDefault();
+
+  const activeForm = document.querySelector(".login-form.active");
+
+  let username = "";
+  let password = "";
+
+  if (activeForm.id === "user-form") {
+    username = document.getElementById("user-username").value.trim();
+    password = document.getElementById("user-password").value;
+  } else {
+    username = document.getElementById("admin-username").value.trim();
+    password = document.getElementById("admin-password").value;
+  }
+
+  if (!username || !password) {
+    alert("❌ Please fill all fields");
+    return;
+  }
+
+  try {
+    const res = await fetch("/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ username, password })
+    });
+
+    const data = await res.json();
+
+    if (data.success) {
+      window.location.href = "/challenges";
+    } else {
+      alert("❌ " + (data.error || "Invalid credentials"));
+    }
+  } catch (err) {
+    alert("❌ Connection error.");
+  }
+}
+  </script>
+</body>
+</html>

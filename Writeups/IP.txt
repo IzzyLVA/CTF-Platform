@@ -1,0 +1,8 @@
+49 46 43 46 49 53 32 58 50 4e 43 48 41 58 5a 51 4d 55 59 58 41 58 33 55 4e 45 59 57 49 4d 32 37 47 45 32 56 36 35 44 4d 4e 45 59 54 41 4e 4a 52 47 35 59 48 32 3d 3d 3d
+
+
+encoded in rot13(17) base32 hex
+
+flag: JMCTF{My_0n1y_cr1m3_15_cur10517y}
+
+must find online Exif data viewer

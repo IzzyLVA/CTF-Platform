@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Junior Member CTF</title>
+
+<style>
+body { margin:0; background:#050505; color:#fff; font-family:"Courier New", monospace; }
+.header {
+    display:flex; justify-content:space-between; align-items:center;
+    padding:15px 25px; border-bottom:1px solid #aa0000;
+    background: rgba(0,255,100,0.03); position:fixed;
+    top:0; left:0; right:0; z-index: 1000;
+}
+.header-title { color:#ff0000; font-size:18px; letter-spacing:3px; text-shadow:0 0 8px #ff0000; }
+.header-center { position:absolute; left:50%; transform:translateX(-50%); }
+.header-right { display:flex; align-items:center; gap:15px; font-size:12px; color:#aaa; }
+
+.login-btn {
+    border:1px solid #aa0000; padding:5px 12px; cursor:pointer; color:#ff0000;
+}
+.login-btn:hover { background:#ff0000; color:black; box-shadow:0 0 8px #ff0000; }
+
+.reset-btn {
+    border:1px solid #aa0000; background:transparent; color:#ff0000;
+    padding:5px 15px; cursor:pointer; font-family:inherit;
+}
+.reset-btn:hover { background:#ff0000; color:black; box-shadow:0 0 8px #ff0000; }
+
+.container { padding:80px 20px 60px; display:flex; flex-direction:column; align-items:center; }
+
+.cards { display:flex; flex-wrap:wrap; justify-content:center; gap:25px; max-width:1100px; }
+
+.card {
+    width:250px; height:150px; border:1px solid #aa0000;
+    padding:20px; position:relative; cursor:pointer;
+    transition:0.3s; background: rgba(255,0,0,0.03);
+}
+.card:hover { box-shadow:0 0 12px #ff0000; transform:scale(1.03); }
+.card.selected { border:2px solid #ff0000; box-shadow:0 0 20px #ff0000; }
+.card.disabled { opacity:0.4; pointer-events:none; }
+
+.tag { position:absolute; top:10px; right:10px; font-size:11px; padding:3px 8px; border:1px solid #ff0000; color:#ff0000; }
+.title { margin-top:25px; font-size:18px; }
+.id { position:absolute; bottom:10px; font-size:11px; color:#777; }
+
+.terminal-wrapper {
+    margin-top:40px; width:100%; max-width:600px;
+    opacity:0; transform:translateY(30px); transition:0.4s ease; pointer-events:none;
+}
+.terminal-wrapper.active { opacity:1; transform:translateY(0); pointer-events:all; }
+
+.terminal { border:1px solid #aa0000; padding:25px; text-align:center; background: rgba(0,0,0,0.6); }
+.mission-title { color:#ff0000; font-size:18px; margin-bottom:8px; }
+
+.launch-btn {
+    margin-top:15px; padding:10px 25px; background:#aa0000; border:none;
+    color:white; cursor:pointer; font-family:inherit;
+}
+.launch-btn:hover { background:#ff0000; box-shadow:0 0 10px #ff0000; }
+
+.status { position:fixed; right:20px; bottom:15px; color:#ff0000; font-size:12px; z-index:1001; }
+
+#flagMessage { margin-top:10px; font-size:13px; height:20px; }
+.flag-error { color:#ff0000; animation:shake 0.3s; }
+.flag-success { color:#00ff88; }
+
+@keyframes shake { 0%{transform:translateX(0);} 25%{transform:translateX(-5px);} 50%{transform:translateX(5px);} 75%{transform:translateX(-5px);} 100%{transform:translateX(0);} }
+
+.admin-panel {
+    position: fixed; left: -320px; top: 70px; width: 300px; height: calc(100vh - 80px);
+    background: #0a0a0a; border: 1px solid #aa0000; padding: 15px;
+    transition: left 0.4s ease; z-index: 999; overflow-y: auto;
+}
+.admin-panel.open { 
+    left: 0;
+ }
+.admin-toggle {
+    position: fixed;
+    left: 0;
+    top: 140px;
+    background: #aa0000;
+    color: white;
+    border: none;
+    padding: 10px 6px;
+    cursor: pointer;
+    font-family: inherit;
+    z-index: 1000;
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+    transition: left 0.4s ease;
+}
+.admin-toggle:hover { background: #ff0000; }
+</style>
+</head>
+
+<body>
+
+<div class="header">
+    <div class="header-title">JUNIOR MEMBER :: CTF</div>
+    <div class="header-center">
+        <button onclick="resetAll()" class="reset-btn">RESET</button>
+    </div>
+    <div class="header-right">
+        <span>USER: {{ user }}</span>
+        <span id="scoreDisplay" style="color:#ff0000; font-weight:bold; margin-left:15px;">SCORE: {{ score }}</span>
+        <div class="login-btn" onclick="window.location.href='/logout'">LOGOUT</div>
+    </div>
+</div>
+
+<div class="container">
+
+<div class="cards">
+    <div class="card {% if solved is defined and solved.get('portal') %}disabled{% endif %}" onclick="selectCard(this,'portal','The Portal')">
+        <div class="tag">EASY</div>
+        <div class="title">The Portal</div>
+        <div class="id">ID: WEB_PORTAL</div>
+    </div>
+    <div class="card {% if solved is defined and solved.get('cookies') %}disabled{% endif %}" onclick="selectCard(this,'cookies','Session Hijack')">
+        <div class="tag">MEDIUM</div>
+        <div class="title">Session Hijack</div>
+        <div class="id">ID: WEB_COOKIES</div>
+    </div>
+    <div class="card {% if solved is defined and solved.get('vault') %}disabled{% endif %}" onclick="selectCard(this,'vault','Vault')">
+        <div class="tag">EASY</div>
+        <div class="title">Vault</div>
+        <div class="id">ID: WEB_VAULT</div>
+    </div>
+    <div class="card {% if solved is defined and solved.get('encoding') %}disabled{% endif %}" onclick="selectCard(this, 'encoding', 'Endocded Message')">
+        <div class="tag">HARD</div>
+        <div class="title">Encoded Message</div>
+        <div class="id">ID: CRYPTOGRAPHY_CHALLENGE</div>
+    </div>
+    <div class="card {% if solved is defined and solved.get('mountain') %}disabled{% endif %}" onclick="selectCard(this,'mountain','Mountain')">
+        <div class="tag">HARD</div>
+        <div class="title">Special Mountain</div>
+        <div class="id">ID: OSINT_CHALLENGE</div>
+    </div>
+    <div class="card {% if solved is defined and solved.get('ip') %}disabled{% endif %}" onclick="selectCard(this,'ip','IP')">
+        <div class="tag">MEDIUM</div>
+        <div class="title">IP</div>
+        <div class="id">ID: STEGONOGRAPHY_CHALLENGE</div>
+    </div>
+    <div class="card {% if solved is defined and solved.get('store') %}disabled{% endif %}" onclick="selectCard(this,'store','Store')">
+        <div class="tag">HARD</div>
+        <div class="title">Somewhere</div>
+        <div class="id">ID: OSINT_CHALLENGE</div>
+    </div>
+    <div class="card {% if solved is defined and solved.get('skater') %}disabled{% endif %}" onclick="selectCard(this,'skater','Skater')">
+        <div class="tag">MEDIUM</div>
+        <div class="title">Skater</div>
+        <div class="id">ID: OSINT_CHALLENGE</div>
+    </div>
+    <div class="card {% if solved is defined and solved.get('crypto') %}disabled{% endif %}" onclick="selectCard(this,'crypto','Crypto')">
+        <div class="tag">EASY</div>
+        <div class="title">Crypto</div>
+        <div class="id">ID: CRYPTOGRAPHY_CHALLENGE</div>
+    </div>
+</div>
+
+<div id="leaderboard" style="margin-top:40px; border:1px solid #aa0000; padding:20px; width:300px;">
+    <h3 style="color:#ff0000;">TOP HACKERS</h3>
+    <div id="leaderboardContent">Loading...</div>
+</div>
+
+{% if is_admin is defined and is_admin %}
+<button class="admin-toggle" onclick="toggleAdminPanel()">ADMIN PANEL ►</button>
+<div id="adminPanel" class="admin-panel">
+    <h3 style="color:#ff0000; margin:0 0 15px 0;">ADMIN CONTROLS</h3>
+    <button onclick="resetAllScores()" class="launch-btn" style="width:100%; margin-bottom:20px;">RESET ALL SCORES</button>
+    <h4 style="color:#ff0000; margin:0 0 10px 0;">Users</h4>
+    <div id="adminUsers" style="font-size:13px;"></div>
+</div>
+{% endif %}
+
+<div class="terminal-wrapper" id="terminalWrapper">
+<div class="terminal">
+    <div class="mission-title" id="missionTitle"></div>
+    <div id="missionDesc">Connection ready...</div>
+    <button class="launch-btn" onclick="launch()">LAUNCH TERMINAL</button>
+
+    <form id="flagForm" style="margin-top:20px;">
+        <input type="hidden" id="challengeInput">
+        <input id="flagInput" type="text" placeholder="ENTER FLAG..." 
+               style="padding:10px; width:65%; background:black; color:#fff; border:1px solid #aa0000;">
+        <button type="submit" class="launch-btn">SUBMIT</button>
+    </form>
+    <div id="flagMessage"></div>
+</div>
+</div>
+
+</div>
+
+<div class="status" id="status">STATUS: IDLE</div>
+
+<script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
+<script>
+const socket = io();
+let selectedChallenge = null;
+let currentCard = null;
+const currentUser = "{{ user }}";
+
+function selectCard(card, challenge, title) {
+    if (card.classList.contains("disabled")) return;
+    if (currentCard === card) { deselectAll(); return; }
+    deselectAll();
+    currentCard = card;
+    card.classList.add('selected');
+    selectedChallenge = challenge;
+    document.getElementById("challengeInput").value = challenge;
+    document.getElementById('missionTitle').innerText = "MISSION: " + title;
+    document.getElementById('status').innerText = "STATUS: READY";
+    document.getElementById('terminalWrapper').classList.add('active');
+}
+
+function deselectAll() {
+    document.querySelectorAll('.card').forEach(c => c.classList.remove('selected'));
+    document.getElementById('terminalWrapper').classList.remove('active');
+    document.getElementById('flagInput').value = "";
+    selectedChallenge = null;
+    currentCard = null;
+    document.getElementById('status').innerText = "STATUS: IDLE";
+}
+
+function launch() {
+    if (!selectedChallenge) return;
+    window.open("/challenge/" + selectedChallenge, "_blank");
+}
+
+document.getElementById("flagForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const flag = document.getElementById("flagInput").value.trim();
+    const challenge = document.getElementById("challengeInput").value;
+    const msg = document.getElementById("flagMessage");
+
+    if (!flag || !challenge) {
+        msg.className = "flag-error"; msg.innerText = "Select challenge + enter flag";
+        return;
+    }
+
+    const res = await fetch("/submit_flag", {
+        method: "POST",
+        headers: {"Content-Type": "application/x-www-form-urlencoded"},
+        body: `flag=${encodeURIComponent(flag)}&challenge=${challenge}`
+    });
+
+    const data = await res.json();
+    if (data.status === "success") {
+        msg.className = "flag-success";
+        msg.innerText = "Correct flag!";
+        document.getElementById("flagInput").value = "";
+        setTimeout(() => location.reload(), 800);
+    } else {
+        msg.className = "flag-error";
+        msg.innerText = data.message || "Incorrect flag";
+    }
+});
+
+function renderLeaderboard(data) {
+    const container = document.getElementById("leaderboardContent");
+    container.innerHTML = "";
+    data.forEach((user, i) => {
+        container.innerHTML += `<div style="margin:4px 0;">#${i+1} ${user.username} — ${user.score}</div>`;
+    });
+
+    const me = data.find(u => u.username === currentUser);
+    if (me) document.getElementById("scoreDisplay").innerText = `SCORE: ${me.score}`;
+}
+
+async function loadLeaderboard() {
+    try {
+        const res = await fetch("/api/leaderboard");
+        renderLeaderboard(await res.json());
+    } catch(e) { console.error(e); }
+}
+
+socket.on("leaderboard_update", (data) => {
+    renderLeaderboard(data);
+});
+
+
+function toggleAdminPanel() {
+    const panel = document.getElementById("adminPanel");
+    const btn = document.querySelector(".admin-toggle");
+
+    panel.classList.toggle("open");
+
+    if (panel.classList.contains("open")) {
+        btn.style.left = "300px";
+        btn.innerText = "ADMIN PANEL ◄";
+    } else {
+        btn.style.left = "0";
+        btn.innerText = "ADMIN PANEL ►";
+    }
+}
+
+function renderAdminUsers(users) {
+    const container = document.getElementById("adminUsers");
+    if (!container) return;
+    let html = "";
+    users.forEach(u => {
+        html += `
+            <div style="display:flex;justify-content:space-between;align-items:center;margin:8px 0;padding:6px 10px;background:rgba(255,0,0,0.05);border:1px solid #440000;">
+                <span>${u.username} <span style="color:#ff6666;">(${u.score})</span></span>
+                <div>
+                    <button onclick="resetUserScore('${u.username}')" style="background:#aa0000;color:white;border:none;padding:3px 10px;margin-right:5px;cursor:pointer;font-size:12px;">RESET</button>
+                    <button onclick="deleteUser('${u.username}')" style="background:#440000;color:#ff8888;border:none;padding:3px 10px;cursor:pointer;font-size:12px;">DELETE</button>
+                </div>
+            </div>`;
+    });
+    container.innerHTML = html.length ? html : "<div style='color:#666;'>No users registered yet.</div>";
+}
+
+async function loadAdminUsers() {
+    if (!document.getElementById("adminUsers")) return;
+    try {
+        const res = await fetch("/api/admin/users");
+        renderAdminUsers(await res.json());
+    } catch(e) { console.error(e); }
+}
+
+socket.on("admin_users_update", (users) => {
+    renderAdminUsers(users);
+});
+
+socket.on("connect", () => {
+    loadLeaderboard();
+    loadAdminUsers();
+});
+
+async function deleteUser(username) {
+    if (!confirm(`Delete ${username}?`)) return;
+
+    await fetch("/api/admin/delete_user", {
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body:JSON.stringify({username})
+    });
+
+    loadAdminUsers();
+    loadLeaderboard();
+}
+
+async function resetUserScore(username) {
+    if (!confirm(`Reset score for ${username}?`)) return;
+
+    await fetch("/api/admin/reset_user_score", {
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body:JSON.stringify({username})
+    });
+
+    loadAdminUsers();
+    loadLeaderboard();
+}
+
+async function resetAllScores() {
+    if (!confirm("Reset ALL scores?")) return;
+    await fetch("/api/admin/reset_scores", {method:"POST"});
+    location.reload();
+    loadLeaderboard();
+}
+
+async function resetAll() {
+    if (!confirm("Reset entire CTF?")) return;
+
+    await fetch("/api/admin/reset_scores", {method:"POST"});
+}
+
+socket.on("ctf_reset", () => {
+    location.reload();
+});
+
+loadAdminUsers();
+</script>
+</body>
+</html>

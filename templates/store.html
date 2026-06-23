@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JMCTF 2026 • OSINT Challenge 1</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=VT323&display=swap');
+        
+        body {
+            margin: 0;
+            padding: 0;
+            background: #0a0a0a;
+            color: #00ff41;
+            font-family: 'VT323', monospace;
+            font-size: 24px;
+            line-height: 1.5;
+        }
+
+        .terminal {
+            max-width: 1000px;
+            margin: 40px auto;
+            background: #111;
+            border: 3px solid #00ff41;
+            border-radius: 8px;
+            box-shadow: 0 0 40px rgba(0, 255, 65, 0.5);
+            overflow: hidden;
+        }
+
+        .header {
+            background: #1a1a1a;
+            padding: 15px 25px;
+            border-bottom: 3px solid #00ff41;
+            text-align: center;
+            font-size: 32px;
+        }
+
+        .content {
+            padding: 40px;
+            text-align: center;
+        }
+
+        .images {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            flex-wrap: wrap;
+            margin: 30px 0;
+        }
+
+        .images img {
+            max-width: 420px;
+            border: 2px solid #00ff41;
+            box-shadow: 0 0 15px rgba(0, 255, 65, 0.3);
+        }
+
+        p {
+            max-width: 800px;
+            margin: 20px auto;
+        }
+
+        .flag-box {
+            margin-top: 40px;
+            padding: 20px;
+            background: #000;
+            border: 2px dashed #00ff41;
+            font-size: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="terminal">
+        <div class="header">JMCTF 2026 • OSINT CHALLENGE 1</div>
+        
+        <div class="content">
+            <p>A suspected stalker had these 2 images in his possession, we have reason to believe both images were taken on the same stree, your task is to find the street.</p>
+            
+            <div class="images">
+                <img src="/static/clue1.jpg" alt="Clue 1">
+                <img src="/static/clue2.jpg" alt="Clue 2">
+            </div>
+
+            <p><strong>Goal:</strong> Find the street name of both images.</p>
+            
+            <p class="flag-box">
+                Once you find the location, submit the flag in this format:<br>
+                <strong>JMCTF{exact_street_name}</strong><br>
+                (Example: JMCTF{nellis_blvd} or JMCTF{Maryland_pkwy})
+            </p>
+
+            <p style="color:#666; font-size:20px; margin-top:40px;">
+                Tip: Pay close attention to signs, buildings, street features, and any text visible in the images.
+            </p>
+        </div>
+    </div>
+</body>
+</html>

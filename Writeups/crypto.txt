@@ -1,0 +1,9 @@
+JMCTF{Crypto_15_4_us3fu1_5ki11_bu7_ch0c0l4t3_ch1p_1s_5t1ll_b3tt3r}
+
+
+rot13(20)
+base64
+hex
+
+RBH
+

@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JMCTF 2026 • OSINT Challenge: Missing Person</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=VT323&display=swap');
+        
+        body {
+            margin: 0;
+            padding: 0;
+            background: #0a0a0a;
+            color: #00ff41;
+            font-family: 'VT323', monospace;
+            font-size: 23px;
+            line-height: 1.5;
+        }
+
+        .terminal {
+            max-width: 950px;
+            margin: 40px auto;
+            background: #111;
+            border: 3px solid #00ff41;
+            border-radius: 10px;
+            box-shadow: 0 0 40px rgba(0, 255, 65, 0.5);
+        }
+
+        .header {
+            background: #1a1a1a;
+            padding: 18px;
+            text-align: center;
+            font-size: 34px;
+            border-bottom: 3px solid #00ff41;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .warning {
+            color: #ffaa00;
+            font-size: 20px;
+            margin-bottom: 20px;
+        }
+
+        img {
+            max-width: 100%;
+            border: 3px solid #00ff41;
+            margin: 25px 0;
+            box-shadow: 0 0 20px rgba(0, 255, 65, 0.4);
+        }
+
+        .instructions {
+            background: #000;
+            padding: 25px;
+            border: 2px dashed #00ff41;
+            margin: 30px 0;
+            font-size: 21px;
+        }
+
+        .flag-box {
+            margin-top: 40px;
+            padding: 20px;
+            background: #000;
+            border: 2px solid #00ff41;
+            font-size: 21px;
+        }
+    </style>
+</head>
+<body>
+    <div class="terminal">
+        <div class="header">JMCTF 2026 • OSINT CHALLENGE: MISSING PERSON</div>
+        
+        <div class="content">
+            <p class="warning">⚠️ This is a fictional scenario for educational purposes only.</p>
+            
+            <p><strong>Case:</strong> Alex Rivera, 20, posted this photo on social media during a road trip 18 days ago and has not been heard from since.</p>
+
+            <p>Here is the last known photo:</p>
+            
+            <img src="/static/skater.jpg" alt="Last photo posted by Alex Rivera">
+
+            <div class="instructions">
+                <strong>Your Task:</strong><br><br>
+                Find where this photo was taken using OSINT techniques.
+            </div>
+
+            <div class="flag-box">
+                Submit the flag like this:<br><br>
+                <strong>JMCTF{location_name}</strong><br><br>
+                (e.g. JMCTF{grand_canyon_south_rim} or JMCTF{Shoreline_Dr_&_Casco_Point_Rd})
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CTF Challenge • The Photograph</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+        
+        :root {
+            --bg: #0f0f1e;
+            --accent: #00ffcc;
+        }
+        
+        body {
+            margin: 0;
+            padding: 0;
+            background: var(--bg);
+            color: #e0e0e0;
+            font-family: 'Press Start 2P', system-ui;
+            text-align: center;
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            overflow-x: hidden;
+        }
+        
+        .container {
+            max-width: 720px;
+            padding: 40px 20px;
+        }
+        
+        h1 {
+            font-size: 2.2rem;
+            color: var(--accent);
+            text-shadow: 0 0 15px var(--accent);
+            margin-bottom: 10px;
+            letter-spacing: 4px;
+        }
+        
+        .subtitle {
+            font-size: 1rem;
+            color: #888;
+            margin-bottom: 40px;
+            letter-spacing: 6px;
+        }
+        
+        .story {
+            background: rgba(0, 255, 204, 0.05);
+            border: 2px solid var(--accent);
+            border-radius: 8px;
+            padding: 25px;
+            margin-bottom: 40px;
+            font-size: 0.95rem;
+            line-height: 1.8;
+            text-align: left;
+            box-shadow: 0 0 20px rgba(0, 255, 204, 0.2);
+        }
+        
+        img {
+            max-width: 100%;
+            border: 6px solid var(--accent);
+            border-radius: 4px;
+            box-shadow: 0 0 40px rgba(0, 255, 204, 0.4);
+            margin-bottom: 30px;
+            image-rendering: crisp-edges;
+            transition: transform 0.3s ease;
+        }
+        
+        img:hover {
+            transform: scale(1.02);
+        }
+        
+        .hint-box {
+            background: #1a1a2e;
+            border-left: 6px solid #ffcc00;
+            padding: 20px 25px;
+            margin: 30px auto;
+            max-width: 520px;
+            font-size: 0.9rem;
+            color: #ffcc00;
+            text-align: left;
+            box-shadow: 0 0 15px rgba(255, 204, 0, 0.3);
+        }
+        
+        .download-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            background: var(--accent);
+            color: #0f0f1e;
+            font-family: 'Press Start 2P', system-ui;
+            font-size: 1.1rem;
+            padding: 18px 40px;
+            border-radius: 6px;
+            text-decoration: none;
+            margin-top: 20px;
+            box-shadow: 0 10px 30px rgba(0, 255, 204, 0.4);
+            transition: all 0.3s ease;
+            letter-spacing: 2px;
+        }
+        
+        .download-btn:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 15px 40px rgba(0, 255, 204, 0.6);
+            background: #00ffdd;
+        }
+        
+        .footer {
+            margin-top: 60px;
+            font-size: 0.75rem;
+            color: #555;
+            letter-spacing: 3px;
+        }
+        
+        .scanline {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: repeating-linear-gradient(
+                to bottom,
+                transparent 0px,
+                transparent 4px,
+                rgba(0, 255, 204, 0.07) 4px,
+                rgba(0, 255, 204, 0.07) 6px
+            );
+            pointer-events: none;
+            z-index: 9999;
+            animation: scan 4s linear infinite;
+        }
+        
+        @keyframes scan {
+            0% { background-position: 0 0; }
+            100% { background-position: 0 100vh; }
+        }
+    </style>
+</head>
+<body>
+    <div class="scanline"></div>
+    
+    <div class="container">
+        <h1>THE PHOTOGRAPH</h1>
+        <div class="subtitle">CASE FILE #47-Ω</div>
+        
+        <div class="story">
+            <p>Agent,</p>
+            <p>We recovered this photograph from the abandoned server room. On the surface it looks completely ordinary. But our analysts believe the real message was never meant to be seen with the naked eye.</p>
+            <p>Download it. Study it. The truth is always embedded somewhere deeper.</p>
+        </div>
+        
+        <img src="/static/IMG_0410.jpg">
+        
+        <div class="hint-box">
+            Sometimes the most critical information in a photograph isn’t in the pixels you see…<br>
+            it’s what the file itself quietly remembers.
+        </div>
+        
+        <a href="/static/IMG_0410.jpg" download="IMG_0410.jpg" class="download-btn">
+            ▼ DOWNLOAD IMAGE
+        </a>
+        
+        <div class="footer">
+            GOOD LUCK, AGENT • THE FLAG IS WAITING IN THE SHADOWS
+        </div>
+    </div>
+
+    <script>
+        const img = document.querySelector('img');
+        img.addEventListener('contextmenu', (e) => {
+            e.preventDefault();
+            alert("🧩 Pro tip from the devs: the answer was never meant to be obvious. Look beyond the visible.");
+        });
+        
+        console.log('%cCTF hint for you (the challenge creator): the EXIF data is the real target. The text above hints without spelling it out.', 'color:#00ffcc; font-size:10px');
+    </script>
+</body>
+</html>
